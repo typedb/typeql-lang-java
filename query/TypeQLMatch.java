@@ -26,7 +26,6 @@ import com.vaticle.typeql.lang.common.TypeQLToken;
 import com.vaticle.typeql.lang.common.exception.ErrorMessage;
 import com.vaticle.typeql.lang.common.exception.TypeQLException;
 import com.vaticle.typeql.lang.pattern.Conjunction;
-import com.vaticle.typeql.lang.pattern.Negation;
 import com.vaticle.typeql.lang.pattern.Pattern;
 import com.vaticle.typeql.lang.pattern.variable.BoundVariable;
 import com.vaticle.typeql.lang.pattern.variable.ThingVariable;
@@ -42,7 +41,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.vaticle.typedb.common.collection.Collections.list;
 import static com.vaticle.typeql.lang.common.TypeQLToken.Char.COMMA_SPACE;
@@ -211,8 +209,8 @@ public class TypeQLMatch extends TypeQLQuery implements Aggregatable<TypeQLMatch
 
     private void sortVarsAreInScope() {
         List<UnboundVariable> sortableVars = modifiers.filter.isEmpty() ? namedVariablesUnbound() : modifiers.filter;
-        if (modifiers.sorting != null && !sortableVars.contains(modifiers.sorting.var())) {
-            throw TypeQLException.of(VARIABLE_OUT_OF_SCOPE_MATCH.message(modifiers.sorting.var()));
+        if (modifiers.sorting != null && Arrays.stream(modifiers.sorting.vars()).anyMatch(v -> !sortableVars.contains(v))) {
+            throw TypeQLException.of(VARIABLE_OUT_OF_SCOPE_MATCH.message(Arrays.toString(modifiers.sorting.vars())));
         }
     }
 

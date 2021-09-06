@@ -26,34 +26,39 @@ import com.vaticle.typeql.lang.common.TypeQLToken;
 import com.vaticle.typeql.lang.common.exception.TypeQLException;
 import com.vaticle.typeql.lang.pattern.variable.UnboundVariable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static com.vaticle.typeql.lang.common.exception.ErrorMessage.INVALID_SORTING_ORDER;
 
 public interface Sortable<S, O, L> {
 
-    default S sort(String var) {
-        return sort(UnboundVariable.named(var));
+    default S sort(String first, String... next) {
+        UnboundVariable[] vars = new UnboundVariable[1 + next.length];
+        vars[0] = UnboundVariable.named(first);
+        for (int i = 1; i < next.length; i++) vars[i] = UnboundVariable.named(next[i]);
+        return sort(vars);
     }
 
-    default S sort(String var, String order) {
+    default S sort(List<String> vars, String order) {
         TypeQLArg.Order o = TypeQLArg.Order.of(order);
         if (o == null) throw TypeQLException.of(
                 INVALID_SORTING_ORDER.message(TypeQLArg.Order.ASC, TypeQLArg.Order.DESC)
         );
-        return sort(UnboundVariable.named(var), o);
+        return sort(vars.stream().map(UnboundVariable::named).toArray(UnboundVariable[]::new), o);
     }
 
-    default S sort(String var, TypeQLArg.Order order) {
-        return sort(UnboundVariable.named(var), order);
+    default S sort(List<String> vars, TypeQLArg.Order order) {
+        return sort(vars.stream().map(UnboundVariable::named).toArray(UnboundVariable[]::new), order);
     }
 
-    default S sort(UnboundVariable var) {
-        return sort(new Sorting(var));
+    default S sort(UnboundVariable[] vars) {
+        return sort(new Sorting(vars));
     }
 
-    default S sort(UnboundVariable var, TypeQLArg.Order order) {
-        return sort(new Sorting(var, order));
+    default S sort(UnboundVariable[] vars, TypeQLArg.Order order) {
+        return sort(new Sorting(vars, order));
     }
 
     S sort(Sorting sorting);
@@ -64,22 +69,22 @@ public interface Sortable<S, O, L> {
 
     class Sorting {
 
-        private final UnboundVariable var;
+        private final UnboundVariable[] vars;
         private final TypeQLArg.Order order;
         private final int hash;
 
-        public Sorting(UnboundVariable var) {
-            this(var, null);
+        public Sorting(UnboundVariable[] vars) {
+            this(vars, null);
         }
 
-        public Sorting(UnboundVariable var, TypeQLArg.Order order) {
-            this.var = var;
+        public Sorting(UnboundVariable[] vars, TypeQLArg.Order order) {
+            this.vars = vars;
             this.order = order;
-            this.hash = Objects.hash(var(), order());
+            this.hash = Objects.hash(Arrays.hashCode(vars()), order());
         }
 
-        public UnboundVariable var() {
-            return var;
+        public UnboundVariable[] vars() {
+            return vars;
         }
 
         public TypeQLArg.Order order() {
@@ -89,12 +94,10 @@ public interface Sortable<S, O, L> {
         @Override
         public String toString() {
             StringBuilder sort = new StringBuilder();
-
-            sort.append(var);
+            sort.append(Arrays.toString(vars));
             if (order != null) {
                 sort.append(TypeQLToken.Char.SPACE).append(order);
             }
-
             return sort.toString();
         }
 
@@ -102,10 +105,8 @@ public interface Sortable<S, O, L> {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-
             Sorting that = (Sorting) o;
-
-            return (this.var().equals(that.var()) &&
+            return (Arrays.equals(this.vars(), that.vars()) &&
                     this.order().equals(that.order()));
         }
 
