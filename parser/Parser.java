@@ -382,7 +382,6 @@ public class Parser extends TypeQLBaseVisitor {
         UnboundVariable[] vars = ctx.VAR_().stream().map(this::getVar).toArray(UnboundVariable[]::new);
         return ctx.ORDER_() == null ? new Sortable.Sorting(vars) :
                 new Sortable.Sorting(vars, TypeQLArg.Order.of(ctx.ORDER_().getText()));
-
     }
 
     // COMPUTE QUERY ===========================================================
