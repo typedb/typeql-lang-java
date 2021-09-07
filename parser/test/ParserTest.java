@@ -391,7 +391,7 @@ public class ParserTest {
     public void testSchemaQuery() {
         final String query = "match $x plays starring:actor; sort $x asc;";
         TypeQLMatch parsed = TypeQL.parseQuery(query).asMatch();
-        TypeQLMatch expected = match(var("x").plays("starring", "actor")).sort("x", "asc");
+        TypeQLMatch expected = match(var("x").plays("starring", "actor")).sort(Arrays.asList("x"), "asc");
 
         assertQueryEquals(expected, parsed, query);
     }
@@ -402,7 +402,7 @@ public class ParserTest {
         TypeQLMatch parsed = TypeQL.parseQuery(query).asMatch();
         TypeQLMatch expected = match(
                 var("x").isa("movie").has("rating", var("r"))
-        ).sort("r", "desc");
+        ).sort(Arrays.asList("r"), "desc");
 
         assertQueryEquals(expected, parsed, query);
     }
@@ -424,7 +424,7 @@ public class ParserTest {
         TypeQLMatch parsed = TypeQL.parseQuery(query).asMatch();
         TypeQLMatch expected = match(
                 var("x").isa("movie").has("rating", var("r"))
-        ).sort("r", "desc").offset(10).limit(10);
+        ).sort(Arrays.asList("r"), "desc").offset(10).limit(10);
 
         assertQueryEquals(expected, parsed, query);
     }

@@ -29,15 +29,14 @@ import com.vaticle.typeql.lang.pattern.variable.UnboundVariable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static com.vaticle.typeql.lang.common.exception.ErrorMessage.INVALID_SORTING_ORDER;
 
 public interface Sortable<S, O, L> {
 
-    default S sort(String first, String... next) {
-        UnboundVariable[] vars = new UnboundVariable[1 + next.length];
-        vars[0] = UnboundVariable.named(first);
-        for (int i = 1; i < next.length; i++) vars[i] = UnboundVariable.named(next[i]);
+    default S sort(String var) {
+        UnboundVariable[] vars = new UnboundVariable[] { UnboundVariable.named(var) };
         return sort(vars);
     }
 
@@ -94,10 +93,8 @@ public interface Sortable<S, O, L> {
         @Override
         public String toString() {
             StringBuilder sort = new StringBuilder();
-            sort.append(Arrays.toString(vars));
-            if (order != null) {
-                sort.append(TypeQLToken.Char.SPACE).append(order);
-            }
+            sort.append(Stream.of(vars).map(UnboundVariable::toString).reduce((a, b) -> a + ", "  + b).get());
+            if (order != null) sort.append(TypeQLToken.Char.SPACE).append(order);
             return sort.toString();
         }
 
