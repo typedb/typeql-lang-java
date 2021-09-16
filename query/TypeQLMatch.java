@@ -35,7 +35,6 @@ import com.vaticle.typeql.lang.query.builder.Sortable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -305,7 +304,7 @@ public class TypeQLMatch extends TypeQLQuery implements Aggregatable<TypeQLMatch
         public TypeQLMatch.Filtered get(UnboundVariable var, UnboundVariable... vars) {
             List<UnboundVariable> varList = new ArrayList<>();
             varList.add(var);
-            varList.addAll(Arrays.asList(vars));
+            varList.addAll(list(vars));
             return get(varList);
         }
 
