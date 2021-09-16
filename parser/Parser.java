@@ -379,7 +379,7 @@ public class Parser extends TypeQLBaseVisitor {
 
     @Override
     public Sortable.Sorting visitSort(TypeQLParser.SortContext ctx) {
-        UnboundVariable[] vars = ctx.VAR_().stream().map(this::getVar).toArray(UnboundVariable[]::new);
+        List<UnboundVariable> vars = ctx.VAR_().stream().map(this::getVar).collect(toList());
         return ctx.ORDER_() == null ? new Sortable.Sorting(vars) :
                 new Sortable.Sorting(vars, TypeQLArg.Order.of(ctx.ORDER_().getText()));
     }

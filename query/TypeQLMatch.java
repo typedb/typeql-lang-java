@@ -209,8 +209,8 @@ public class TypeQLMatch extends TypeQLQuery implements Aggregatable<TypeQLMatch
 
     private void sortVarsAreInScope() {
         List<UnboundVariable> sortableVars = modifiers.filter.isEmpty() ? namedVariablesUnbound() : modifiers.filter;
-        if (modifiers.sorting != null && Arrays.stream(modifiers.sorting.vars()).anyMatch(v -> !sortableVars.contains(v))) {
-            throw TypeQLException.of(VARIABLE_OUT_OF_SCOPE_MATCH.message(Arrays.toString(modifiers.sorting.vars())));
+        if (modifiers.sorting != null && modifiers.sorting.vars().stream().anyMatch(v -> !sortableVars.contains(v))) {
+            throw TypeQLException.of(VARIABLE_OUT_OF_SCOPE_MATCH.message(modifiers.sorting.vars()));
         }
     }
 
