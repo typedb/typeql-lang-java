@@ -106,7 +106,7 @@ public class Parser extends TypeQLBaseVisitor {
             String rawTypeQLString, Function<TypeQLParser, CONTEXT> parserMethod, Function<CONTEXT, RETURN> visitor
     ) {
         if (rawTypeQLString == null) throw TypeQLException.of("Query String is NULL");
-        String typeQLString = rawTypeQLString.trim();
+        String typeQLString = rawTypeQLString.stripTrailing();
         if (typeQLString.isEmpty()) throw TypeQLException.of("Query String is empty or blank");
 
         ErrorListener errorListener = ErrorListener.of(typeQLString);
