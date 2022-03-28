@@ -134,15 +134,15 @@ public class Rule implements Definable {
 
         // rule 'has' cannot assign both an attribute type and a named variable
         if (then.has().size() == 1 && then.has().get(0).type().isPresent() && then.has().get(0).attribute().isNamed()) {
-            String attr_var = then.has().get(0).attribute().name();
-            String attr_type;
+            String attrVar = then.has().get(0).attribute().name();
+            String attrType;
             if (then.has().get(0).type().get().label().isPresent()) {
-                attr_type = then.has().get(0).type().get().label().get().label();
+                attrType = then.has().get(0).type().get().label().get().label();
             } else {
                 assert then.has().get(0).type().get().isNamed();
-                attr_type = then.has().get(0).type().get().name();
+                attrType = then.has().get(0).type().get().name();
             }
-            throw TypeQLException.of(INVALID_RULE_THEN_HAS.message(label, then, attr_type, attr_var));
+            throw TypeQLException.of(INVALID_RULE_THEN_HAS.message(label, then, attrType, attrVar));
         }
 
         // all user-written variables in the 'then' must be present in the 'when', if it exists.
