@@ -1,3 +1,7 @@
+## DEPRACATED: This repository has been merged into [vaticle/typeql](github.com/vaticle/typeql/blob/master/java)
+
+---
+
 [![Grabl](https://grabl.io/api/status/vaticle/typeql-lang-java/badge.svg)](https://grabl.io/vaticle/typeql-lang-java)
 [![GitHub release](https://img.shields.io/github/release/vaticle/typeql-lang-java.svg)](https://github.com/vaticle/typeql-lang-java/releases/latest)
 [![Discord](https://img.shields.io/discord/665254494820368395?color=7389D8&label=chat&logo=discord&logoColor=ffffff)](https://vaticle.com/discord)
